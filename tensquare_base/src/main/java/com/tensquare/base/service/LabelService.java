@@ -26,4 +26,5 @@ public interface LabelService {
     // 根据ID删除标签
     void deleteById(String id);
 
+    List<Label> findSearch(Label label);
 }

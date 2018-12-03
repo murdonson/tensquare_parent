@@ -8,6 +8,8 @@ import entity.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Created by jzy on 2018/12/3.
  */
@@ -21,11 +23,8 @@ public class LableController {
     private LabelService labelService;
     @Autowired
     private IdWorker idWorker;
-
-
     @RequestMapping(method = RequestMethod.GET)
     public Result findAll() {
-
         return new Result(true,labelService.findAll(),"查询成功",StatusCode.OK );
     }
 
@@ -41,5 +40,16 @@ public class LableController {
         labelService.add(label);
         return new Result(true, StatusCode.OK, "增加成功");
     }
+
+
+    // 根据条件查询
+    @RequestMapping(value = "/search",method = RequestMethod.POST)
+    public Result findSearch(@RequestBody Label label) {
+        List<Label> labelList= labelService.findSearch(label);
+        return new Result(true, labelList, "查询成功", StatusCode.OK);
+    }
+
+
+
 }
 

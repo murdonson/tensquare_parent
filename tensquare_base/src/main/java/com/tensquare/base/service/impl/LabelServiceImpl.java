@@ -4,9 +4,17 @@ import Util.IdWorker;
 import com.tensquare.base.dao.LabelDao;
 import com.tensquare.base.service.LabelService;
 import com.tensquare.base.pojo.Label;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +44,30 @@ public class LabelServiceImpl implements LabelService {
     @Override
     public void add(Label label) {
         labelDao.save(label);
+    }
+
+
+    @Override
+    public List<Label> findSearch(Label label) {
+       return labelDao.findAll(new Specification<Label>() {
+            @Override
+            public Predicate toPredicate(Root<Label> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                ArrayList<Predicate> predicateList = new ArrayList<>();
+                if (!StringUtils.isBlank(label.getLabelname())) {
+                    Predicate predicate = criteriaBuilder.like(root.get("labelname").as(String.class), "%" + label.getLabelname() + "%");
+                    predicateList.add(predicate);
+                }
+                if (!StringUtils.isBlank(label.getState())) {
+                    Predicate state = criteriaBuilder.equal(root.get("state").as(String.class), label.getState());
+                    predicateList.add(state);
+                }
+
+                Predicate[] predicates = new Predicate[predicateList.size()];
+                Predicate[] predicates1 = predicateList.toArray(predicates);
+                return criteriaBuilder.and(predicates1);
+
+            }
+        });
     }
 
     @Override
