@@ -1,6 +1,7 @@
 package com.tensquare.base.service;
 
 import com.tensquare.base.pojo.Label;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface LabelService {
     void deleteById(String id);
 
     List<Label> findSearch(Label label);
+
+    Page<Label> findPage(Label label, int page, int size);
 }
